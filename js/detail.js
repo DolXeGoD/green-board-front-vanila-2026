@@ -18,3 +18,28 @@ if(Number.isSafeInteger(postId) && postId > 0){
     renderComments(filteredComments);
 }
 
+
+// 댓글 작성 폼 submit 시 댓글 추가
+document.querySelector("#comment-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const content = document.querySelector("#comment-content").value.trim();
+
+    // 현재 페이지에 해당하는 게시글이 없거나
+    // 댓글 내용이 비어있거나 255자를 넘는 경우 예외 처리
+    if (!post || !content || content.length > 255) {
+        document.querySelector("#comment-message").textContent = "댓글은 1 ~ 255자로 입력하세요.";
+        return;
+    }
+
+    comments.push({
+        id: getCommentNextId(),
+        boardId: postId,
+        content: content,
+        author: "실습 사용자",
+    });
+    saveLocal();
+
+    document.querySelector("#comment-content").value = "";
+    renderComments(comments.filter(comment => comment.boardId === postId));
+})
+
