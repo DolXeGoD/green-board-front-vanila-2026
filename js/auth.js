@@ -14,6 +14,30 @@ function requireLogin() {
     return false;
 }
 
+document.querySelector(".logout-button").addEventListener("click", logout)
+
+async function logout() {
+    try {
+        const response = await fetch("http://127.0.0.1:8080/api/user/logout", {
+            method: "POST", 
+            headers: {...getAuthHeaders(), "Content-Type": "application/json"}
+        });
+        
+        // HTTP 상태코드가 200이 아니거나, API 성공 여부가 실패인 경우 예외처리
+        if (!response.ok) {
+            throw new Error("로그아웃에 실패했습니다.");
+        }
+
+        // 로컬스토리지 내 토큰 제거
+        localStorage.removeItem("accessToken");
+        // 로그인 페이지로 이동
+        location.replace("login.html");
+    } catch(error) {
+        // #nav-message.textContent -> alert로 대체
+        alert(error.message);
+    }
+}
+
 // Authorization Header 생성
 function getAuthHeaders() {
     const accessToken = localStorage.getItem("accessToken");
@@ -26,7 +50,7 @@ function getAuthHeaders() {
 function setupNavigation() {
     // 로그인 상태인 경우 -> 로그인 버튼 숨김
     document.querySelector(".login-link").hidden = isLoggedIn();
-    
+
     // 로그아웃 상태인 경우 -> 로그아웃 버튼 숨김
     document.querySelector(".logout-button").hidden = !isLoggedIn();
 
