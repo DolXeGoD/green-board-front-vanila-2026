@@ -12,7 +12,7 @@ if (requireLogin()) {
 async function loadPosts(page = currentPage) {
     try {
         const response = await fetch(
-            `http://127.0.0.1:8080/api/board?page=${page}&size=1`,
+            `http://127.0.0.1:8080/api/board?page=${page}&size=10`,
             { headers: getAuthHeaders() },
         );
         const result = await response.json();
@@ -34,7 +34,7 @@ async function loadPosts(page = currentPage) {
             pageNumber = `${currentPage + 1} / ${totalPages}페이지`;
         }
         document.querySelector("#page-number").textContent = pageNumber;
-        
+
         // 현재 1페이지인 경우 이전 버튼 비활성화
         previousButton.disabled = currentPage === 0;
         // 현재 마지막 페이지인 경우 다음 버튼 비활성화
