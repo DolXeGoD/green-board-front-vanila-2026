@@ -11,6 +11,9 @@ async function savePost(event) {
     const title = form.elements.title.value.trim();
     const content = form.elements.content.value.trim();
 
+    // 게시글 작성 버튼
+    const button = form.querySelector('button[type="submit"]');
+
     // #form-message 요소를 필요할 때 마다 생성해 사용하지 않고,
     // 미리 변수에 저장해 재사용하는 방식으로 구현
     const formMessage = document.querySelector("#form-message");
@@ -20,11 +23,21 @@ async function savePost(event) {
         return;
     }
 
+    if (button.disabled) {
+        return;
+    }
+
+    // 요청이 처리되는 동안 버튼 비활성화 및 안내 문구 출력
+    button.disabled = true;
+    formMessage.textContent = "저장 중...";
+
     try {
         await apiRequest("/board", "POST", { title, content });
         // index.html 경로로 이동
         location.href = "index.html";
     } catch (error) {
         formMessage.textContent = error.message;
+    } finally {
+        button.disabled = false;
     }
 }
